@@ -50,9 +50,17 @@ func readAll() ([]byte, error) {
 }
 
 type Config struct {
-	ServerId        string `yaml:"server_id"`
-	ServerJWT       string `yaml:"server_jwt"`
-	IntanceHostname string `yaml:"instance_hostname"`
+	ServerId        string      `yaml:"server_id"`
+	ServerJWT       string      `yaml:"server_jwt"`
+	IntanceHostname string      `yaml:"instance_hostname"`
+	Ports           PortsConfig `yaml:"ports"`
+}
+
+type PortsConfig struct {
+	Auth       int `yaml:"auth"`
+	Forwarding int `yaml:"forwarding"`
+	Maildb     int `yaml:"maildb"`
+	Mailout    int `yaml:"mailout"`
 }
 
 func WriteServerJWT(jwt string) error {
