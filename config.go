@@ -55,7 +55,7 @@ type Config struct {
 	IntanceHostname string `yaml:"instance_hostname"`
 }
 
-func writeServerJWT(jwt string) error {
+func WriteServerJWT(jwt string) error {
 	file := path.Join(CONFIG_LOCATION, "conf.d", "server-jwt.yml")
 	data := fmt.Sprintf("server_jwt: \"%s\"\n", jwt)
 	err := ioutil.WriteFile(file, []byte(data), 0644)
@@ -66,7 +66,7 @@ func writeServerJWT(jwt string) error {
 	return nil
 }
 
-func writeInstanceConfig(config InstanceConfig) error {
+func WriteInstanceConfig(config InstanceConfig) error {
 	file := path.Join(CONFIG_LOCATION, "conf.d", "instance.yml")
 	data := ""
 	data += fmt.Sprintf("instance_hostname: \"%s\"", config.Hostname)
