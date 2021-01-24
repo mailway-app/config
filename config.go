@@ -46,6 +46,8 @@ func readAll() ([]byte, error) {
 }
 
 type Config struct {
+	LogLevel string `yaml:"log_level"`
+
 	ServerId         string `yaml:"server_id"`
 	ServerJWT        string `yaml:"server_jwt"`
 	InstanceHostname string `yaml:"instance_hostname"`
@@ -55,6 +57,10 @@ type Config struct {
 	PortForwarding int `yaml:"port_forwarding"`
 	PortMaildb     int `yaml:"port_maildb"`
 	PortMailout    int `yaml:"port_mailout"`
+
+	OutSMTPHost     string `yaml:"out_smtp_host"`
+	OutSMTPUsername string `yaml:"out_smtp_username"`
+	OutSMTPPassword string `yaml:"out_smtp_password"`
 
 	LogFrontlineError      string `yaml:"log_frontline_error"`
 	LogFrontlineHTTPAccess string `yaml:"log_frontline_http_access"`
