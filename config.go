@@ -46,11 +46,11 @@ func readAll() ([]byte, error) {
 }
 
 type Config struct {
-	ServerId        string      `yaml:"server_id"`
-	ServerJWT       string      `yaml:"server_jwt"`
-	IntanceHostname string      `yaml:"instance_hostname"`
-	IntanceEmail    string      `yaml:"instance_email"`
-	Ports           PortsConfig `yaml:"ports"`
+	ServerId         string      `yaml:"server_id"`
+	ServerJWT        string      `yaml:"server_jwt"`
+	InstanceHostname string      `yaml:"instance_hostname"`
+	InstanceEmail    string      `yaml:"instance_email"`
+	Ports            PortsConfig `yaml:"ports"`
 }
 
 type PortsConfig struct {
