@@ -13,10 +13,6 @@ const (
 	CONFIG_LOCATION = "/etc/mailway"
 )
 
-type InstanceConfig struct {
-	Hostname string `json:"hostname"`
-}
-
 func PrettyPrint() ([]byte, error) {
 	c, err := Read()
 	if err != nil {
@@ -53,6 +49,7 @@ type Config struct {
 	ServerId        string      `yaml:"server_id"`
 	ServerJWT       string      `yaml:"server_jwt"`
 	IntanceHostname string      `yaml:"instance_hostname"`
+	IntanceEmail    string      `yaml:"instance_email"`
 	Ports           PortsConfig `yaml:"ports"`
 }
 
@@ -74,11 +71,11 @@ func WriteServerJWT(jwt string) error {
 	return nil
 }
 
-func WriteInstanceConfig(config InstanceConfig) error {
+func WriteInstanceConfig(hostname, email string) error {
 	file := path.Join(CONFIG_LOCATION, "conf.d", "instance.yml")
 	data := ""
-	data += fmt.Sprintf("instance_hostname: \"%s\"", config.Hostname)
-	data += "\n"
+	data += fmt.Sprintf("instance_hostname: \"%s\"\n", hostname)
+	data += fmt.Sprintf("instance_email: \"%s\"\n", email)
 	err := ioutil.WriteFile(file, []byte(data), 0644)
 	if err != nil {
 		return errors.Wrap(err, "could not write file")
