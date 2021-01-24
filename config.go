@@ -46,18 +46,19 @@ func readAll() ([]byte, error) {
 }
 
 type Config struct {
-	ServerId         string      `yaml:"server_id"`
-	ServerJWT        string      `yaml:"server_jwt"`
-	InstanceHostname string      `yaml:"instance_hostname"`
-	InstanceEmail    string      `yaml:"instance_email"`
-	Ports            PortsConfig `yaml:"ports"`
-}
+	ServerId         string `yaml:"server_id"`
+	ServerJWT        string `yaml:"server_jwt"`
+	InstanceHostname string `yaml:"instance_hostname"`
+	InstanceEmail    string `yaml:"instance_email"`
 
-type PortsConfig struct {
-	Auth       int `yaml:"auth"`
-	Forwarding int `yaml:"forwarding"`
-	Maildb     int `yaml:"maildb"`
-	Mailout    int `yaml:"mailout"`
+	PortAuth       int `yaml:"port_auth"`
+	PortForwarding int `yaml:"port_forwarding"`
+	PortMaildb     int `yaml:"port_maildb"`
+	PortMailout    int `yaml:"port_mailout"`
+
+	LogFrontlineError      string `yaml:"log_frontline_error"`
+	LogFrontlineHTTPAccess string `yaml:"log_frontline_http_access"`
+	LogFrontlineHTTPError  string `yaml:"log_frontline_http_error"`
 }
 
 func WriteServerJWT(jwt string) error {
