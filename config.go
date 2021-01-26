@@ -65,6 +65,8 @@ type Config struct {
 	LogFrontlineError      string `yaml:"log_frontline_error"`
 	LogFrontlineHTTPAccess string `yaml:"log_frontline_http_access"`
 	LogFrontlineHTTPError  string `yaml:"log_frontline_http_error"`
+
+	SpamFilter bool `yaml:"spam_filter"`
 }
 
 func WriteServerJWT(jwt string) error {
