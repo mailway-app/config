@@ -61,6 +61,7 @@ type Config struct {
 	OutSMTPHost     string `yaml:"out_smtp_host"`
 	OutSMTPUsername string `yaml:"out_smtp_username"`
 	OutSMTPPassword string `yaml:"out_smtp_password"`
+	OutDKIMPath     string `yaml:"out_dkim_path"`
 
 	LogFrontlineError      string `yaml:"log_frontline_error"`
 	LogFrontlineHTTPAccess string `yaml:"log_frontline_http_access"`
@@ -72,6 +73,17 @@ type Config struct {
 func WriteServerJWT(jwt string) error {
 	file := path.Join(CONFIG_LOCATION, "conf.d", "server-jwt.yml")
 	data := fmt.Sprintf("server_jwt: \"%s\"\n", jwt)
+	err := ioutil.WriteFile(file, []byte(data), 0644)
+	if err != nil {
+		return errors.Wrap(err, "could not write file")
+	}
+
+	return nil
+}
+
+func WriteDKIM(keyPath string) error {
+	file := path.Join(CONFIG_LOCATION, "conf.d", "dkim.yml")
+	data := fmt.Sprintf("out_dkim_path: \"%s\"\n", keyPath)
 	err := ioutil.WriteFile(file, []byte(data), 0644)
 	if err != nil {
 		return errors.Wrap(err, "could not write file")
