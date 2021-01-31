@@ -6,6 +6,7 @@ import (
 	"path"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
 
@@ -119,4 +120,18 @@ func Read() (*Config, error) {
 	}
 
 	return &config, nil
+}
+
+func (c *Config) GetLogLevel() log.Level {
+	switch c.LogLevel {
+	case "":
+	case "INFO":
+		return log.InfoLevel
+	case "DEBUG":
+		return log.DebugLevel
+	case "WARN":
+		return log.WarnLevel
+	}
+	log.Fatalf("uknown log level: %s", c.LogLevel)
+	panic("unreachable")
 }
