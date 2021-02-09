@@ -62,6 +62,7 @@ type Config struct {
 	OutSMTPHost     string `yaml:"out_smtp_host"`
 	OutSMTPUsername string `yaml:"out_smtp_username"`
 	OutSMTPPassword string `yaml:"out_smtp_password"`
+	OutSMTPPort     int    `yaml:"out_smtp_port"`
 	OutDKIMPath     string `yaml:"out_dkim_path"`
 
 	LogFrontlineError      string `yaml:"log_frontline_error"`
