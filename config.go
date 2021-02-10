@@ -69,6 +69,9 @@ type Config struct {
 	LogFrontlineHTTPAccess string `yaml:"log_frontline_http_access"`
 	LogFrontlineHTTPError  string `yaml:"log_frontline_http_error"`
 
+	ForwardingLoopDetectionCount int `yaml:"forwarding_loop_detection_count"`
+	ForwardingRateLimitingCount  int `yaml:"forwarding_rate_limiting_count"`
+
 	SpamFilter bool `yaml:"spam_filter"`
 }
 
