@@ -73,6 +73,8 @@ type Config struct {
 	ForwardingLoopDetectionCount int `yaml:"forwarding_loop_detection_count"`
 	ForwardingRateLimitingCount  int `yaml:"forwarding_rate_limiting_count"`
 
+	MaildbPath string `yaml:"maildb_db_path"`
+
 	SpamFilter bool `yaml:"spam_filter"`
 }
 
