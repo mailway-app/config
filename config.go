@@ -47,7 +47,8 @@ func readAll() ([]byte, error) {
 }
 
 type Config struct {
-	LogLevel string `yaml:"log_level"`
+	LogLevel  string `yaml:"log_level"`
+	LogFormat string `yaml:"log_format"`
 
 	ServerId         string `yaml:"server_id"`
 	ServerJWT        string `yaml:"server_jwt"`
@@ -127,8 +128,10 @@ func Read() (*Config, error) {
 }
 
 func (c *Config) GetLogLevel() log.Level {
+	if c.LogLevel == "" {
+		c.LogLevel = "INFO"
+	}
 	switch c.LogLevel {
-	case "":
 	case "INFO":
 		return log.InfoLevel
 	case "DEBUG":
@@ -136,6 +139,20 @@ func (c *Config) GetLogLevel() log.Level {
 	case "WARN":
 		return log.WarnLevel
 	}
-	log.Fatalf("uknown log level: %s", c.LogLevel)
+	log.Fatalf("unknown log level: '%s'", c.LogLevel)
+	panic("unreachable")
+}
+
+func (c *Config) GetLogFormat() log.Formatter {
+	if c.LogFormat == "" {
+		c.LogFormat = "text"
+	}
+	switch c.LogFormat {
+	case "text":
+		return &log.TextFormatter{}
+	case "json":
+		return &log.JSONFormatter{}
+	}
+	log.Fatalf("unknown log format: '%s'", c.LogFormat)
 	panic("unreachable")
 }
