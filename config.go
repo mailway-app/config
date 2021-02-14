@@ -4,22 +4,25 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
 
 const (
-	CONFIG_LOCATION = "/etc/mailway"
+	ROOT_LOCATION   = "/etc/mailway"
+	CONFIG_LOCATION = ROOT_LOCATION + "/conf.d"
+)
+
+var (
+	CurrConfig *Config
 )
 
 func PrettyPrint() ([]byte, error) {
-	c, err := Read()
-	if err != nil {
-		return []byte(""), err
-	}
-	s, err := yaml.Marshal(&c)
+	s, err := yaml.Marshal(&CurrConfig)
 	if err != nil {
 		return []byte(""), err
 	}
@@ -29,18 +32,21 @@ func PrettyPrint() ([]byte, error) {
 func readAll() ([]byte, error) {
 	config := []byte{}
 
-	confd := path.Join(CONFIG_LOCATION, "conf.d")
-	files, err := ioutil.ReadDir(confd)
+	files, err := ioutil.ReadDir(CONFIG_LOCATION)
 	if err != nil {
 		return config, err
 	}
 
 	for _, file := range files {
-		content, err := ioutil.ReadFile(path.Join(confd, file.Name()))
-		if err != nil {
-			return config, err
+		ext := filepath.Ext(file.Name())
+		if ext == ".yml" || ext == ".yaml" {
+			absFile := path.Join(CONFIG_LOCATION, file.Name())
+			content, err := ioutil.ReadFile(absFile)
+			if err != nil {
+				return config, err
+			}
+			config = append(config, content...)
 		}
-		config = append(config, content...)
 	}
 
 	return config, err
@@ -79,7 +85,7 @@ type Config struct {
 }
 
 func WriteServerJWT(jwt string) error {
-	file := path.Join(CONFIG_LOCATION, "conf.d", "server-jwt.yml")
+	file := path.Join(CONFIG_LOCATION, "server-jwt.yml")
 	data := fmt.Sprintf("server_jwt: \"%s\"\n", jwt)
 	err := ioutil.WriteFile(file, []byte(data), 0644)
 	if err != nil {
@@ -90,7 +96,7 @@ func WriteServerJWT(jwt string) error {
 }
 
 func WriteDKIM(keyPath string) error {
-	file := path.Join(CONFIG_LOCATION, "conf.d", "dkim.yml")
+	file := path.Join(CONFIG_LOCATION, "dkim.yml")
 	data := fmt.Sprintf("out_dkim_path: \"%s\"\n", keyPath)
 	err := ioutil.WriteFile(file, []byte(data), 0644)
 	if err != nil {
@@ -101,7 +107,7 @@ func WriteDKIM(keyPath string) error {
 }
 
 func WriteInstanceConfig(hostname, email string) error {
-	file := path.Join(CONFIG_LOCATION, "conf.d", "instance.yml")
+	file := path.Join(CONFIG_LOCATION, "instance.yml")
 	data := ""
 	data += fmt.Sprintf("instance_hostname: \"%s\"\n", hostname)
 	data += fmt.Sprintf("instance_email: \"%s\"\n", email)
@@ -113,20 +119,74 @@ func WriteInstanceConfig(hostname, email string) error {
 	return nil
 }
 
-func Read() (*Config, error) {
+func loadConfig() error {
 	data, err := readAll()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not read config")
+		return errors.Wrap(err, "could not read config")
 	}
 
 	var config Config
 
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse")
+		return errors.Wrap(err, "failed to parse")
 	}
 
-	return &config, nil
+	*CurrConfig = config
+	return nil
+}
+
+func Init() error {
+	CurrConfig = new(Config)
+	if err := loadConfig(); err != nil {
+		return errors.Wrap(err, "failed to load config")
+	}
+	log.SetLevel(CurrConfig.GetLogLevel())
+	log.SetFormatter(CurrConfig.GetLogFormat())
+
+	go func() {
+		if err := watchConfig(); err != nil {
+			log.Errorf("could not watch config: %s", err)
+		}
+	}()
+
+	return nil
+}
+
+func watchConfig() error {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		return errors.Wrap(err, "could not create new watcher")
+	}
+	defer watcher.Close()
+
+	done := make(chan bool)
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					break
+				}
+				log.Infof("%s detected config change; reloading config", event.String())
+				if err := loadConfig(); err != nil {
+					log.Errorf("could not load config: %s", err)
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					break
+				}
+				log.Errorf("error while watching files: %s", err)
+			}
+		}
+	}()
+
+	log.Debugf("start watching %s for changes", CONFIG_LOCATION)
+	if err := watcher.Add(CONFIG_LOCATION); err != nil {
+		return errors.Wrap(err, "failed to watch config")
+	}
+	<-done
+	return nil
 }
 
 func (c *Config) GetLogLevel() log.Level {
