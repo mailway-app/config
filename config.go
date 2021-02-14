@@ -168,7 +168,7 @@ func watchConfig() error {
 				if !ok {
 					break
 				}
-				log.Infof("%s detected config change; reloading config", event.String())
+				log.Debugf("%s detected config change; reloading config", event.String())
 				if err := loadConfig(); err != nil {
 					log.Errorf("could not load config: %s", err)
 				}
