@@ -91,6 +91,7 @@ func WriteServerJWT(jwt string) error {
 	if err != nil {
 		return errors.Wrap(err, "could not write file")
 	}
+	CurrConfig.ServerJWT = jwt
 
 	return nil
 }
@@ -102,6 +103,7 @@ func WriteDKIM(keyPath string) error {
 	if err != nil {
 		return errors.Wrap(err, "could not write file")
 	}
+	CurrConfig.OutDKIMPath = keyPath
 
 	return nil
 }
@@ -115,6 +117,8 @@ func WriteInstanceConfig(hostname, email string) error {
 	if err != nil {
 		return errors.Wrap(err, "could not write file")
 	}
+	CurrConfig.InstanceHostname = hostname
+	CurrConfig.InstanceEmail = email
 
 	return nil
 }
