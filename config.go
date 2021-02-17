@@ -61,10 +61,12 @@ type Config struct {
 	InstanceHostname string `yaml:"instance_hostname"`
 	InstanceEmail    string `yaml:"instance_email"`
 
-	PortAuth       int `yaml:"port_auth"`
-	PortForwarding int `yaml:"port_forwarding"`
-	PortMaildb     int `yaml:"port_maildb"`
-	PortMailout    int `yaml:"port_mailout"`
+	PortAuth           int `yaml:"port_auth"`
+	PortForwarding     int `yaml:"port_forwarding"`
+	PortMaildb         int `yaml:"port_maildb"`
+	PortMailout        int `yaml:"port_mailout"`
+	PortFrontlineSMTP  int `yaml:"port_frontline_smtp"`
+	PortFrontlineSMTPS int `yaml:"port_frontline_smtps"`
 
 	OutSMTPHost     string `yaml:"out_smtp_host"`
 	OutSMTPUsername string `yaml:"out_smtp_username"`
