@@ -60,6 +60,7 @@ type Config struct {
 	ServerJWT        string `yaml:"server_jwt"`
 	InstanceHostname string `yaml:"instance_hostname"`
 	InstanceEmail    string `yaml:"instance_email"`
+	InstanceMode     string `yaml:"instance_mode"`
 
 	PortAuth           int `yaml:"port_auth"`
 	PortForwarding     int `yaml:"port_forwarding"`
@@ -110,15 +111,17 @@ func WriteDKIM(keyPath string) error {
 	return nil
 }
 
-func WriteInstanceConfig(hostname, email string) error {
+func WriteInstanceConfig(mode, hostname, email string) error {
 	file := path.Join(CONFIG_LOCATION, "instance.yml")
 	data := ""
+	data += fmt.Sprintf("instance_mode: \"%s\"\n", mode)
 	data += fmt.Sprintf("instance_hostname: \"%s\"\n", hostname)
 	data += fmt.Sprintf("instance_email: \"%s\"\n", email)
 	err := ioutil.WriteFile(file, []byte(data), 0644)
 	if err != nil {
 		return errors.Wrap(err, "could not write file")
 	}
+	CurrConfig.InstanceMode = mode
 	CurrConfig.InstanceHostname = hostname
 	CurrConfig.InstanceEmail = email
 
@@ -223,4 +226,8 @@ func (c *Config) GetLogFormat() log.Formatter {
 	}
 	log.Fatalf("unknown log format: '%s'", c.LogFormat)
 	panic("unreachable")
+}
+
+func (c *Config) IsInstanceLocal() bool {
+	return c.InstanceMode == "local"
 }
