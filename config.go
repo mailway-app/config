@@ -66,6 +66,7 @@ type Config struct {
 	PortForwarding     int `yaml:"port_forwarding"`
 	PortMaildb         int `yaml:"port_maildb"`
 	PortMailout        int `yaml:"port_mailout"`
+	PortWebhook        int `yaml:"port_webhook"`
 	PortFrontlineSMTP  int `yaml:"port_frontline_smtp"`
 	PortFrontlineSMTPS int `yaml:"port_frontline_smtps"`
 
