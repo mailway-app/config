@@ -85,6 +85,8 @@ type Config struct {
 
 	MaildbPath string `yaml:"maildb_db_path"`
 
+	MailoutInsecureMX []string `yaml:"mailout_insecure_mx"`
+
 	SpamFilter bool `yaml:"spam_filter"`
 }
 
