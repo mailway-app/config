@@ -89,6 +89,8 @@ type Config struct {
 	MailoutRateAltSMTPCount int      `yaml:"mailout_rate_alt_smtp_count"`
 
 	SpamFilter bool `yaml:"spam_filter"`
+
+	PassWatcherHIBPApiKey string `yaml:"passwatcher_hibp_api_key"`
 }
 
 func WriteServerJWT(jwt string) error {
