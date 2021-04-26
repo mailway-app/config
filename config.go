@@ -69,6 +69,7 @@ type Config struct {
 	PortWebhook        int `yaml:"port_webhook"`
 	PortFrontlineSMTP  int `yaml:"port_frontline_smtp"`
 	PortFrontlineSMTPS int `yaml:"port_frontline_smtps"`
+	PortResponder      int `yaml:"port_responder"`
 
 	OutSMTPHost     string `yaml:"out_smtp_host"`
 	OutSMTPUsername string `yaml:"out_smtp_username"`
