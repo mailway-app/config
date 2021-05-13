@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	ROOT_LOCATION   = "/etc/mailway"
-	CONFIG_LOCATION = ROOT_LOCATION + "/conf.d"
+	RUNTIME_LOCATION = "/run/mailway"
+	ROOT_LOCATION    = "/etc/mailway"
+	CONFIG_LOCATION  = ROOT_LOCATION + "/conf.d"
 )
 
 var (
